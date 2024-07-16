@@ -2,15 +2,15 @@
 import React from "react";
 import Link from "next/link";
 import Avatar from "../avatar/Avatar";
-import logo from "../../../../public/logo.png";
+import logo from "../../../../public/logo_orare.png";
 import Image from "next/image";
 
 const Navbar = ({ toggleSidebar }) => {
   return (
     <div
-      className="
-  bg-base-100 text-base-content sticky top-0 z-30 flex h-16 w-full justify-center bg-opacity-90 backdrop-blur transition-shadow duration-100 [transform:translate3d(0,0,0)] 
-  shadow-sm
+      className=" hero-overlay bg-opacity-60
+  text-base-content sticky top-0 z-30 flex h-16 w-full justify-center transition-shadow duration-100 [transform:translate3d(0,0,0)] 
+ 
   "
     >
       <nav className="navbar w-full">
@@ -58,7 +58,7 @@ const Navbar = ({ toggleSidebar }) => {
           <div className=" hidden flex-none items-center lg:block">
             <Avatar />
             <Link href="/" className="btn btn-ghost drawer-button font-normal">
-              Sign Out
+              Salir
             </Link>
           </div>
           <div className=" flex-none items-center lg:block">
@@ -66,7 +66,7 @@ const Navbar = ({ toggleSidebar }) => {
               href="/chat"
               className="btn btn-ghost drawer-button font-normal"
             >
-              Chat
+              Diario
             </Link>
           </div>
           <div className="hflex-none items-center lg:block">
@@ -74,7 +74,7 @@ const Navbar = ({ toggleSidebar }) => {
               href="/events"
               className="btn btn-ghost drawer-button font-normal"
             >
-              Events
+              Eventos
             </Link>
           </div>
         </div>

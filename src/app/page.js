@@ -1,10 +1,22 @@
 import Navbar from "./components/navbar/Navbar";
+import Hero from "./components/hero/Hero"
+import Footer from "./components/footer/Footer"
+import Header from "./components/header/Header"
 
 export default function Home() {
   return (
     <main>
-      <Navbar />
-      <h1>landing</h1>
+      <section className="header-hero"
+        style={{
+          backgroundImage: "url('/praying.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}>
+      <Header />
+      <Hero />
+      </section>
+      <Footer />
+   
     </main>
   );
 }
