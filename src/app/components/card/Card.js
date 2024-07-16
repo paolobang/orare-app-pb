@@ -1,4 +1,6 @@
+"use client";
 import React from "react";
+import Link from "next/link";
 
 const Card = ({ event }) => {
   return (
@@ -10,7 +12,15 @@ const Card = ({ event }) => {
         <h2 className="card-title">Event!</h2>
         <p>{event.title}</p>
         <div className="card-actions justify-end">
-          <button className="btn btn-accent">Join Now</button>
+          <Link
+            className="btn btn-accent"
+            href={{
+              pathname: `/events/detail/${event.id}`,
+              query: { event: JSON.stringify(event) },
+            }}
+          >
+            Join Now
+          </Link>
         </div>
       </div>
     </div>
