@@ -1,11 +1,18 @@
 "use client";
 import React from "react";
+import { signIn, useSession, signOut } from "next-auth/react";
+
+
 import Link from "next/link";
 import Avatar from "../avatar/Avatar";
-import logo from "../../../../public/logo_orare.png";
+import logo from "../../../public/logo_orare.png";
 import Image from "next/image";
 
 const Navbar = ({ toggleSidebar }) => {
+  const { data: session } = useSession();
+  //console.log(session);
+
+  
   return (
     <div
       className=" hero-overlay bg-opacity-60
@@ -54,30 +61,56 @@ const Navbar = ({ toggleSidebar }) => {
             </Link>
           </div>
         </div>
-        <div className="flex-0">
-          <div className=" hidden flex-none items-center lg:block">
-            <Avatar />
-            <Link href="/" className="btn btn-ghost drawer-button font-normal">
-              Salir
-            </Link>
+        {session?.user ? (
+          <div className="flex-0">
+            <div className=" hidden flex-none items-center lg:block">
+              <div className="avatar placeholder">
+                <div className="bg-neutral text-neutral-content w-8 rounded-full">
+                  <img src={session.user.image} alt="" />
+                </div>
+              </div>
+              
+              <button
+                onClick={() => {
+                  signOut({
+                    callbackUrl:"/",
+                  })
+            
+                }}
+                className="btn btn-ghost drawer-button font-normal"
+              >
+                Salir
+              </button>
+            </div>
+            
+            <div className=" flex-none items-center lg:block">
+              <Link
+                href="/chat"
+                className="btn btn-ghost drawer-button font-normal"
+              >
+                Diario
+              </Link>
+            </div>
+            <div className="hflex-none items-center lg:block">
+              <Link
+                href="/events"
+                className="btn btn-ghost drawer-button font-normal"
+              >
+                Eventos
+              </Link>
+            </div>
+            <div className="hflex-none items-center lg:block">
+              <Link
+                href="/dashboard"
+                className="btn btn-ghost drawer-button font-normal"
+              >
+                Dashboard
+              </Link>
+            </div>
           </div>
-          <div className=" flex-none items-center lg:block">
-            <Link
-              href="/chat"
-              className="btn btn-ghost drawer-button font-normal"
-            >
-              Diario
-            </Link>
-          </div>
-          <div className="hflex-none items-center lg:block">
-            <Link
-              href="/events"
-              className="btn btn-ghost drawer-button font-normal"
-            >
-              Eventos
-            </Link>
-          </div>
-        </div>
+        ) : (
+            <></>
+        )}
       </nav>
     </div>
   );

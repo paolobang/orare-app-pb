@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import Layout from "../components/layout/Layout";
-import Bubble from "../components/bubble/Bubble";
+import Layout from "../../components/layout/Layout"
+import Bubble from "../../components/bubble/Bubble";
 
 const Chat = () => {
   const [messages, setMessages] = useState([
@@ -20,7 +20,7 @@ const Chat = () => {
   }, [messages]);
 
   return (
-    <Layout>
+    <>
       <div className="flex flex-col h-screen ">
         <div className="flex-1  p-4" style={{ paddingBottom: "5.5rem" }}>
           {messages.map((message, index) => (
@@ -55,7 +55,7 @@ const Chat = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

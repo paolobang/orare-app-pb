@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useSearchParams } from "next/navigation";
-import Layout from "../../../components/layout/Layout";
+import Layout from "../../../../components/layout/Layout";
 
 const Detail = () => {
   const searchParams = useSearchParams();
