@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from "../../../../public/logo_orare_white.png";
+import logo from "../../../public/logo_orare_white.png";
 import Image from "next/image";
 
 export default function Footer() {
