@@ -14,7 +14,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
   /* padding: 1rem; */
 }
 

@@ -8,8 +8,8 @@ import Image from "next/image";
 const Navbar = ({ toggleSidebar }) => {
   return (
     <div
-      className=" hero-overlay bg-opacity-60
-  text-base-content sticky top-0 z-30 flex h-16 w-full justify-center transition-shadow duration-100 [transform:translate3d(0,0,0)] 
+      className=" bg-base-100
+  text-base-content sticky top-0 z-30 flex h-16 w-full justify-center transition-shadow duration-100 [transform:translate3d(0,0,0)] shadow-sm
  
   "
     >
