@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import Layout from "../components/layout/Layout";
-import Bubble from "../components/bubble/Bubble";
+import Layout from "../../components/layout/Layout";
+import Bubble from "../../components/bubble/Bubble";
 
 const Chat = () => {
   const [messages, setMessages] = useState([
