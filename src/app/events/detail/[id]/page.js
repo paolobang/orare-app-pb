@@ -12,7 +12,7 @@ const Detail = () => {
 
   return (
     <Layout>
-      <div className="hero bg-base-200 min-h-screen">
+      <div className="hero bg-gray-100 min-h-screen">
         <div className="hero-content flex-col lg:flex-row">
           <img
             src={eventDetail.url}

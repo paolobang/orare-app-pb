@@ -2,7 +2,6 @@
 import React from "react";
 import { signIn, useSession, signOut } from "next-auth/react";
 
-
 import Link from "next/link";
 import Avatar from "../avatar/Avatar";
 import logo from "../../../public/logo_orare.png";
@@ -10,13 +9,12 @@ import Image from "next/image";
 
 const Navbar = ({ toggleSidebar }) => {
   const { data: session } = useSession();
-  //console.log(session);
+  console.log(session);
 
-  
   return (
     <div
-      className=" hero-overlay bg-opacity-60
-  text-base-content sticky top-0 z-30 flex h-16 w-full justify-center transition-shadow duration-100 [transform:translate3d(0,0,0)] 
+      className=" bg-base-100
+  text-base-content sticky top-0 z-30 flex h-16 w-full justify-center transition-shadow duration-100 [transform:translate3d(0,0,0)] shadow-sm
  
   "
     >
@@ -46,7 +44,10 @@ const Navbar = ({ toggleSidebar }) => {
             </label>
           </span>
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex-0 btn btn-ghost gap-1 px-2 md:gap-2">
+            <Link
+              href="/chat"
+              className="flex-0 btn btn-ghost gap-1 px-2 md:gap-2"
+            >
               <Image
                 src={logo}
                 alt="Logo"
@@ -66,23 +67,22 @@ const Navbar = ({ toggleSidebar }) => {
             <div className=" hidden flex-none items-center lg:block">
               <div className="avatar placeholder">
                 <div className="bg-neutral text-neutral-content w-8 rounded-full">
-                  <img src={session.user.image} alt="" />
+                  <Avatar name={session.user.email} />
                 </div>
               </div>
-              
+
               <button
                 onClick={() => {
                   signOut({
-                    callbackUrl:"/",
-                  })
-            
+                    callbackUrl: "/",
+                  });
                 }}
                 className="btn btn-ghost drawer-button font-normal"
               >
                 Salir
               </button>
             </div>
-            
+
             <div className=" flex-none items-center lg:block">
               <Link
                 href="/chat"
@@ -99,17 +99,9 @@ const Navbar = ({ toggleSidebar }) => {
                 Eventos
               </Link>
             </div>
-            <div className="hflex-none items-center lg:block">
-              <Link
-                href="/dashboard"
-                className="btn btn-ghost drawer-button font-normal"
-              >
-                Dashboard
-              </Link>
-            </div>
           </div>
         ) : (
-            <></>
+          <></>
         )}
       </nav>
     </div>

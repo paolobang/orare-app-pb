@@ -1,26 +1,13 @@
+//firestroe/chat,navbar,layout
+
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../../../app/firebase"
-import { error } from "console";
+import { auth } from "../../../../app/firebase";
 
-
-/* const handler = NextAuth({
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    }),
-  ],
-});
-
-export { handler as GET, handler as POST }; */
-
-
-
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -29,21 +16,26 @@ const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {},
-      async authorize(credentials): Promise<any>{
-        return await signInWithEmailAndPassword(auth, (credentials as any).email || '', (credentials as any).password || '')
-          .then(userCredential => {
-            if (userCredential.user){
-              return userCredential.user
-            }
-            return null;
-          })
-          .catch(error => (console.log(error)))
-      }
-
+      async authorize(credentials): Promise<any> {
+        try {
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            (credentials as any).email || "",
+            (credentials as any).password || ""
+          );
+          return {
+            id: userCredential.user.uid,
+            email: userCredential.user.email,
+          };
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      },
     }),
   ],
   pages: {
-    signIn: '/auth/signin',
+    signIn: "/auth/signin",
   },
   callbacks: {
     async jwt({ token, user }) {

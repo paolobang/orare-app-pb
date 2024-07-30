@@ -1,16 +1,14 @@
-import {Providers} from './Providers'
+import { Providers } from "./Providers";
 
-import { getServerSession } from 'next-auth'
-import './globals.css'
-import { Inter } from 'next/font/google'
+import { getServerSession } from "next-auth";
+import "./globals.css";
+import { Inter } from "next/font/google";
 
-import Login from './Login';
-import Home from './page';
-import Navbar from '../components/navbar/Navbar';
+import Login from "./Login";
+import Home from "./page";
+import Navbar from "../components/navbar/Navbar";
 
-const inter = Inter({ subsets: ['latin'] })
-
-
+const inter = Inter({ subsets: ["latin"] });
 
 export default async function RootLayout({
   children,
@@ -20,10 +18,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>
-          <Navbar />
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
