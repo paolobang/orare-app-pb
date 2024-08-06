@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const driver = neo4j.driver(
-  "neo4j://35.205.214.62:7687",
+  "neo4j://34.79.18.112:7687",
   neo4j.auth.basic("neo4j", "12341234")
 );
 const session = driver.session();
@@ -21,14 +21,16 @@ app.post("/createUser", async (req, res) => {
        MERGE (u:User {userId: $userId})
        ON CREATE SET u.postalCode = $postalCode, u.address = $address, u.email = $email, u.userId = $userId
        MERGE (u)-[:GOES_TO]->(c)
-       RETURN u, c, c.horarioDeMisas AS horarioDeMisas;`,
+       WITH u, c
+       OPTIONAL MATCH (e:Event)
+       WHERE e.postalCode = u.postalCode
+       FOREACH (event IN CASE WHEN e IS NOT NULL THEN [e] ELSE [] END |
+         MERGE (u)-[:INTERESTED_IN]->(event)
+       )
+       RETURN u;`,
       { userId, email, postalCode, address, church }
     );
-    res.json({
-      user: result.records[0].get("u").properties,
-      church: result.records[0].get("c").properties,
-      horarioDeMisas: result.records[0].get("horarioDeMisas"),
-    });
+    res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     console.error("Error creating user:", error);
     res
@@ -38,21 +40,41 @@ app.post("/createUser", async (req, res) => {
 });
 
 app.get("/getChurch", async (req, res) => {
-  const churchName = req.query.name;
+  const uId = req.query.name;
 
   try {
     const result = await session.run(
       `
-      MATCH (c:Church {parroquia: $churchName})<-[:HOLD_BY]-(e:Event)
-      RETURN c.horario_de_misas AS horarioDeMisas, 
-             collect({image: e.image, title: e.title}) AS events
+      MATCH (c:Church)<-[:GOES_TO]-(u:User {userId: $uId})
+      OPTIONAL MATCH (u)-[:INTERESTED_IN]->(e:Event)
+      MATCH (allEvent:Event)
+      RETURN c.horario_de_misas AS horarioDeMisas,
+       collect(DISTINCT {
+         title: allEvent.title,
+         date: allEvent.date,
+         location: allEvent.location,
+         title_description: allEvent.title_description,
+         image: allEvent.image,
+         url: allEvent.url,
+         postalCode: allEvent.postalCode
+       }) AS allEvents,
+       collect(DISTINCT CASE WHEN e IS NOT NULL THEN {
+         title: e.title,
+         date: e.date,
+         location: e.location,
+         title_description: e.title_description,
+         image: e.image,
+         url: e.url,
+         postalCode: e.postalCode
+       } END) AS events
       `,
-      { churchName }
+      { uId }
     );
 
     const response = result.records.map((record) => ({
-      horarioDeMisas: record.get("horarioDeMisas"),
-      events: record.get("events"),
+      horarioDeMisas: record.get("horarioDeMisas") || [],
+      events: record.get("events").filter((event) => event !== null),
+      allEvents: record.get("allEvents"),
     }));
 
     res.json(response[0]);
