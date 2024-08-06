@@ -7,14 +7,15 @@ import { useState } from "react";
 import { auth, createUserDocumentFromAuth } from "../firebase";
 import { postalCodes, churches } from "../utils";
 import axios from "axios";
+import Select from "react-select";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+  const [postalCode, setPostalCode] = useState(null);
   const [address, setAddress] = useState("");
-  const [church, setChurch] = useState("");
+  const [church, setChurch] = useState(null);
   const router = useRouter();
   const [isValidEmail, setIsValidEmail] = useState(true);
 
@@ -37,18 +38,18 @@ export default function Signup() {
       );
       await createUserDocumentFromAuth(
         userCredential.user,
-        postalCode,
+        postalCode?.value,
         address,
-        church
+        church?.value
       );
       console.log(userCredential.user.uid);
       // Send a request to the backend to create a user node in Neo4j
       await axios.post("http://localhost:3002/createUser", {
         userId: userCredential.user.uid,
         email: userCredential.user.email,
-        postalCode,
+        postalCode: postalCode?.value,
         address,
-        church,
+        church: church?.value,
       });
       // Sign in the user using Next.js Authentication
       const result = await signIn("credentials", {
@@ -68,7 +69,26 @@ export default function Signup() {
       // Handle error
     }
   };
+  const postalCodeOptions = postalCodes.map((code) => ({
+    value: code,
+    label: code,
+  }));
 
+  const churchOptions = churches
+    .sort((a, b) => a.parroquia.localeCompare(b.parroquia))
+    .map((church) => ({
+      value: church.parroquia,
+      label: church.parroquia,
+    }));
+
+  const style = {
+    control: (base) => ({
+      ...base,
+      border: 0,
+      // This line disable the blue border
+      boxShadow: "none",
+    }),
+  };
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -137,7 +157,7 @@ export default function Signup() {
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  htmlFor="password"
+                  htmlFor="passwordAgain"
                   className="block text-sm font-medium leading-6 text-gray-400"
                 >
                   Confirma contraseña*
@@ -164,34 +184,31 @@ export default function Signup() {
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  htmlFor="password"
+                  htmlFor="postalCode"
                   className="block text-sm font-medium leading-6 text-gray-400"
                 >
                   Código Postal*
                 </label>
               </div>
               <div className="mt-2">
-                <select
+                <Select
+                  styles={style}
                   id="postalCode"
                   name="postalCode"
-                  onChange={(e) => setPostalCode(e.target.value)}
-                  required
+                  options={postalCodeOptions}
+                  onChange={setPostalCode}
+                  placeholder="Seleccione un código postal"
+                  isClearable
+                  isSearchable
                   className="pl-2 block w-full rounded-md border border-gray-300 py-1.5 text-gray-900 shadow-sm focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                >
-                  <option value="">Seleccione un código postal</option>
-                  {postalCodes.map((code) => (
-                    <option key={code} value={code}>
-                      {code}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  htmlFor="password"
+                  htmlFor="address"
                   className="block text-sm font-medium leading-6 text-gray-400"
                 >
                   Dirección*
@@ -212,29 +229,24 @@ export default function Signup() {
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  htmlFor="password"
+                  htmlFor="church"
                   className="block text-sm font-medium leading-6 text-gray-400"
                 >
                   Iglesia local*
                 </label>
               </div>
               <div className="mt-2">
-                <select
+                <Select
+                  styles={style}
                   id="church"
                   name="church"
-                  onChange={(e) => setChurch(e.target.value)}
-                  required
+                  options={churchOptions}
+                  onChange={setChurch}
+                  placeholder="Seleccione una iglesia"
+                  isClearable
+                  isSearchable
                   className="pl-2 block w-full rounded-md border border-gray-300 py-1.5 text-gray-900 shadow-sm focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                >
-                  <option value="">Seleccione una iglesia</option>
-                  {churches
-                    .sort((a, b) => a.parroquia.localeCompare(b.parroquia))
-                    .map((church) => (
-                      <option key={church.parroquia} value={church.parroquia}>
-                        {church.parroquia}
-                      </option>
-                    ))}
-                </select>
+                />
               </div>
             </div>
 
