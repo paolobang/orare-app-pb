@@ -7,6 +7,7 @@ import axios from "axios";
 import Card from "../../components/card/Card";
 import Layout from "../../components/layout/Layout";
 import Search from "../../components/search/Search";
+import ChurchSchedule from "../../components/church_schdule/ChurchSchedule";
 
 const Events = () => {
   const [events, setEvents] = useState([]);
@@ -14,6 +15,7 @@ const Events = () => {
   const [allEvents, setAllEvents] = useState([]);
   const { data: session, status } = useSession();
   const [searchTerm, setSearchTerm] = useState("");
+  const [church, setChurch] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +24,7 @@ const Events = () => {
           // Fetch user data from Firestore
           const userDoc = await getDoc(doc(db, "users", session.user.id));
           const userData = userDoc.data();
+          setChurch(userData.church);
 
           if (userData && userData.church) {
             // Fetch church data from Neo4j
@@ -74,11 +77,10 @@ const Events = () => {
         <Search searchTerm={searchTerm} onSearchChange={handleSearchChange} />
         {horarioDeMisas && horarioDeMisas.length > 0 && (
           <div>
-            <h1>Horario de Misas</h1>
+            <span className="font-bold ">Tu Parroquia: </span>
+            {church}
             <ul>
-              {horarioDeMisas.map((misa, index) => (
-                <li key={index}>{misa}</li>
-              ))}
+              <ChurchSchedule misa={horarioDeMisas} />
             </ul>
           </div>
         )}

@@ -47,11 +47,14 @@ app.get("/getChurch", async (req, res) => {
       `
       MATCH (c:Church)<-[:GOES_TO]-(u:User {userId: $uId})
       OPTIONAL MATCH (u)-[:INTERESTED_IN]->(e:Event)
+      WHERE date(e.date) >= date()
       MATCH (allEvent:Event)
+      WHERE date(allEvent.date) >= date()
       RETURN c.horario_de_misas AS horarioDeMisas,
        collect(DISTINCT {
          title: allEvent.title,
          date: allEvent.date,
+         hour:allEvent.hour,
          location: allEvent.location,
          title_description: allEvent.title_description,
          image: allEvent.image,
@@ -61,6 +64,7 @@ app.get("/getChurch", async (req, res) => {
        collect(DISTINCT CASE WHEN e IS NOT NULL THEN {
          title: e.title,
          date: e.date,
+         hour:e.hour,
          location: e.location,
          title_description: e.title_description,
          image: e.image,
