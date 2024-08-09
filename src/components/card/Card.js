@@ -11,15 +11,21 @@ const Card = ({ event }) => {
         <h2 className="card-title">{event.title_description}</h2>
         <p className="text-base font-semibold">{event.title}</p>
         <div>
-          <span className="font-bold">Día: </span>
-          {event.date.slice(0, 10)}
+          <span className="font-bold ">Día: </span>
+          {event.date}
+          <span className="font-bold ml-4">Hora: </span>
+          {event.hour}
         </div>
         <div>
           <span className="font-bold">Lugar: </span>
           {event.location}
         </div>
         <div className="card-actions justify-end">
-          <Link className="btn btn-accent" href={event.url}>
+          <Link
+            className="btn text-white"
+            href={event.url}
+            style={{ backgroundColor: "rgb(153, 102, 204)" }}
+          >
             Suscríbete
           </Link>
         </div>

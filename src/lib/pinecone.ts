@@ -1,131 +1,88 @@
-/* import { Pinecone } from '@pinecone-database/pinecone';
-import { getEmbeddings } from '../app/api/chat/route';
-
-import md5 from 'md5'
-
-let pc: Pinecone | null = null
-
-export const getPineconeClient = async () => {
-    if (!pc) {
-        pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY! });
-    }
-    return pc
-
-}
-
-type baba = {
-    prayerContent: string;
-    metadata : {
-        loc: {content: string}
-    }
-}
-
-export async function loadPrayIntoPinecone( pray: string) {
-    const prayers = pray
-    if (!prayers) {
-        throw new Error("No hay oracion")
-    }
-
-
-    // 1. 
-}
-
-async function embedPray( doc: Document) {
-    try {
-        const embeddings = await getEmbeddings( doc.text )
-
-    } catch (error) {
-        console.log("Error embedPray", error)
-        throw error
-    }
-}
-
-
-export async function findSimilarPrayers(userMessage: string) {
-    // 1. Obtener el embedding del mensaje del usuario
-    const embedding = await getEmbeddings(userMessage);
-
-    // 2. Obtener el índice de Pinecone
-    const pinecone = await getPineconeClient();
-    const index = pinecone.Index('bible');
-
-    // 3. Realizar la consulta de similitud en Pinecone
-    const queryResponse = await index.query({
-        topK: 3, // Devolver los 3 resultados más similares
-        vector: embedding,
-        namespace: 'content', // Usar el namespace 'content'
-        includeMetadata: true // Incluir los metadatos en la respuesta
-    });
-
-    // 4. Procesar los resultados
-    const results = queryResponse.matches.map(match => ({
-        id: match.id,
-        score: match.score,
-        metadata: match.metadata
-    }));
-
-    return results;
-}
+/**
+ * @file  src/lib/pinecone.ts
+ * @description
+ * This module is called from /api/chat-pry/route.ts through comparePrayInPinecone
+ * it recieves the last User's message from Diario and it's vectorized 
+ * with getEmbeddings trhough embedPray function returning a vector (array)
+ * @date 09/08/2024
+ * @maintainer Orare Team
+ * @inputs
+ * - message: Last user's message from Diario Component
+ * @outputs
+ * - Returns a queryResponse with the 3 most similar vectors from Pinecone 
+ * Index "bible-verses-metadata" and Namespace "Content"
+ * @dependencies
+ * - Pinecone for performing comparison related to Bible interpreted.
+ * - getEmbeddings for retrieve message vectorized
  */
 
-import { Pinecone } from '@pinecone-database/pinecone';
-import { getEmbeddings } from '../app/api/chat/route';
-import md5 from 'md5';
+import { Pinecone } from "@pinecone-database/pinecone";
+import { getEmbeddings } from "../lib/embeddings"
 
+// Create Pinecone Connection
 let pc: Pinecone | null = null;
-
 export const getPineconeClient = async () => {
-    if (!pc) {
-        pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY! });
-    }
-    return pc
-
+  if (!pc) {
+    pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY! });
+  }
+  return pc;
 };
 
-export async function comparePrayInPinecone(pray: string) {
-    if (!pray) {
-        throw new Error('No hay oración');
-    }
-
-    // 1. Vectorizar la oración
-    const embedding = await embedPray(pray);
-
-    // 2. Obtener el cliente de Pinecone y el índice
-    const pinecone = await getPineconeClient();
-    const index = pinecone.Index('bible-verses-metadata');
-
-    // 3. Comparar el vector del mensaje con los existentes en el índice
-    try {
-        const queryResponse = await index.query({
-            vector: embedding,
-            topK: 3, // Retorna los 3 vectores más similares
-            //namespace: 'content', // Namespace donde se encuentran los vectores
-            includeMetadata: true // Incluir metadatos en la respuesta
-        });
-
-        // 4. Procesar los resultados
-        if (queryResponse.matches?.length) {
-            return queryResponse.matches.map(match => ({
-                id: match.id,
-                score: match.score,
-                metadata: match.metadata,
-            }));
-        } else {
-            console.log('No se encontraron coincidencias.');
-            return [];
-        }
-    } catch (error) {
-        console.error('Error al comparar la oración en Pinecone:', error);
-        throw error;
-    }
-}
-
+// Encoding with getEbeddings the last message from User in Diario (Component)
 async function embedPray(prayerContent: string) {
     try {
-        const embeddings = await getEmbeddings(prayerContent);
-        return embeddings;
+      const embeddings = await getEmbeddings(prayerContent);
+      return embeddings;
     } catch (error) {
-        console.error('Error en embedPray', error);
-        throw error;
+      console.error("Error vectorizando oración de usuario!", error);
+      throw error;
     }
+  }
+
+// Comparing User's Message Vectorized with Bible Interpreted Vectorized 
+export async function comparePrayInPinecone(pray: string) {
+  if (!pray) {
+    throw new Error("Usuario no ingresó oración.");
+  }
+
+  // Vecotizing User's Message 
+  const embedding = await embedPray(pray);
+
+  // Connecting to our Index in Pinecone 
+  const pinecone = await getPineconeClient();
+  const index = pinecone.Index("bible-verses-metadata");
+  const space = "content"
+
+  // Comparing Vectors 
+  try {
+    const queryResponse = await index.namespace(space).query({
+      vector: embedding,
+      topK: 3, // Return 3 Top Similar 
+      includeMetadata: true, 
+      includeValues: true,
+    });
+
+    // Processing Results
+    if (queryResponse.matches?.length) {
+      return queryResponse.matches.map((match) => ({
+        id: match.id,
+        score: match.score,
+        metadata: {
+          area_vida: match.metadata?.area_vida ?? "No disponible",
+          interpretacion: match.metadata?.interpretacion ?? "No disponible",
+          pasaje: match.metadata?.pasaje ?? "No disponible",
+          temas: match.metadata?.temas ?? "No disponible",
+          texto: match.metadata?.texto ?? "No disponible",
+        },
+      }));
+    } else {
+      console.log("No se encontraron coincidencias con nuestro Index de Pinecone");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error al comparar la oración en Pinecone:", error);
+    throw error;
+  }
 }
+
+
