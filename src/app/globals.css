@@ -1,21 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
+  --foreground-rgb: 0, 0, 0 !important;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
+    --foreground-rgb: 255, 255, 255 !important;
   }
 }
 
 body {
+  font-family: 'Montserrat', sans-serif !important;
   color: rgb(var(--foreground-rgb));
-  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
-  /* padding: 1rem; rgb(243 244 246 / var(--tw-bg-opacity));*/
+  background-color: rgb(243, 244, 246, var(--tw-bg-opacity));
 }
 
 @layer utilities {
@@ -23,5 +25,3 @@ body {
     text-wrap: balance;
   }
 }
-
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");

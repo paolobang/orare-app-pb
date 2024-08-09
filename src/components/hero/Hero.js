@@ -4,7 +4,14 @@ import { useRouter } from "next/navigation";
 const Hero = () => {
   const router = useRouter();
   return (
-    <section className="hero-section">
+    <section
+      className="hero-section"
+      style={{
+        backgroundImage: "url('/praying.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div className="hero min-h-screen">
         <div className="hero-overlay bg-opacity-60"></div>
         <div className="hero-content text-neutral-content text-center">
