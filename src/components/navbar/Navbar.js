@@ -57,31 +57,13 @@ const Navbar = ({ toggleSidebar }) => {
                 className="text-gray-400"
                 style={{ fontFamily: "Montserrat" }}
               >
-                Oraré
+                <span className="hidden lg:block">Oraré</span>
               </span>
             </Link>
           </div>
         </div>
         {session?.user ? (
           <div className="flex-0">
-            <div className=" hidden flex-none items-center lg:block">
-              <div className="avatar placeholder">
-                <div className="bg-neutral text-neutral-content w-8 rounded-full">
-                  <Avatar name={session.user.email} />
-                </div>
-              </div>
-
-              <button
-                onClick={() => {
-                  signOut({
-                    callbackUrl: "/",
-                  });
-                }}
-                className="btn btn-ghost drawer-button font-normal"
-              >
-                Salir
-              </button>
-            </div>
 
             <div className=" flex-none items-center lg:block">
               <Link
@@ -98,6 +80,23 @@ const Navbar = ({ toggleSidebar }) => {
               >
                 Eventos
               </Link>
+            </div>
+            <div className="  flex-none items-center lg:block">
+              <div className="hidden avatar placeholder lg:inline-block">
+                <div className="bg-neutral text-neutral-content w-8 rounded-full">
+                  <Avatar name={session.user.email} />
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  signOut({
+                    callbackUrl: "/",
+                  });
+                }}
+                className="btn btn-ghost drawer-button font-normal"
+              >
+                Salir
+              </button>
             </div>
           </div>
         ) : (

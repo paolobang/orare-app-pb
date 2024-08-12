@@ -3,13 +3,13 @@ import React from "react";
 const Search = ({ searchTerm, onSearchChange }) => {
   return (
     <div className="flex justify-center mt-3 mb-6">
-      <label className="input input-bordered flex items-center gap-2">
+      <label className="input input-bordered flex items-center gap-2 w-full max-w-md">
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Busca Tema o Título"
-          className="grow"
+          className="grow "
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
