@@ -211,7 +211,7 @@ export default function Signup() {
                   htmlFor="address"
                   className="block text-sm font-medium leading-6 text-gray-400"
                 >
-                  Dirección*
+                  Dirección
                 </label>
               </div>
               <div className="mt-2">
