@@ -48,11 +48,15 @@ export async function POST(req: Request) {
 
     // Checking rates ---
     const qualifyingRates = pineconeResults?.filter(
-        (pineconeResults) => pineconeResults.score && pineconeResults.score > 0.5
+        (pineconeResults) => pineconeResults.score && pineconeResults.score > 0.1
     )
     let rates = qualifyingRates?.map(pineconeResults => (pineconeResults.score))
-    console.log('rates /////', rates?.join('\n').substring(0, 3000))
-
+    console.log('Scores', rates)
+    // console.log('rates /////', rates?.join('\n').substring(0, 3000))
+    
+    let psj = qualifyingRates?.map(pineconeResults => (pineconeResults.metadata.pasaje))
+    console.log('Pasaje', psj)
+    
     // Preparing Promt for OpenAI
     const prompt = `
               # Rol #
@@ -88,14 +92,13 @@ export async function POST(req: Request) {
               # fin Input #
   
               # Estructura Output #
-              - Versículo elegido
+              - Versículo recomendado: "..."
               - Párrafo con la interpretación del pasaje de la Biblia y palabras de aliento
               # Fin Estructura Output #
   
               # Ejemplo Output #
-              Salmo 22:24 Porque no menospreció ni abominó la aflicción del pobre, Ni de él escondió su rostro; Sino que cuando clamó á él, oyóle.
-  
-              Este Salmo nos recuerda la infinita misericordia y compasión de Dios hacia los pobres y afligidos. Este versículo nos asegura que Dios no ignora el sufrimiento de los necesitados, ni les da la espalda. Al contrario, Él escucha sus clamores y está presente en sus momentos de angustia.
+              - Versículo recomendado: "Salmos 22:24 - Porque no menospreció ni abominó la aflicción del pobre, Ni de él escondió su rostro; Sino que cuando clamó á él, oyóle."
+              - Este Salmo nos recuerda la infinita misericordia y compasión de Dios hacia los pobres y afligidos. Este versículo nos asegura que Dios no ignora el sufrimiento de los necesitados, ni les da la espalda. Al contrario, Él escucha sus clamores y está presente en sus momentos de angustia.
               Tu oración por los pobres del mundo es un acto de amor y solidaridad que refleja el corazón de Dios. Al interceder por ellos, te unes a la misión de Cristo de traer consuelo y esperanza a los más vulnerables. Recuerda que Dios escucha nuestras oraciones y actúa a través de nosotros para llevar su amor y provisión a aquellos que más lo necesitan.
               Te animo a seguir orando y, si es posible, a tomar acciones concretas para ayudar a los pobres en tu comunidad. Cada pequeño gesto de generosidad y compasión puede ser una manifestación del amor de Dios en sus vidas. Confía en que Dios, en su infinita bondad, no abandonará a los necesitados y usará nuestras oraciones y acciones para bendecirlos.
               Que el Señor te bendiga y te fortalezca en tu deseo de servir a los demás. Amén.
