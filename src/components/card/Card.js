@@ -7,7 +7,7 @@ const Card = ({ event }) => {
       <figure>
         <img src={event.image} alt={event.title} />
       </figure>
-      <div className="card-body">
+      <div className="card-body text-stone-600">
         <h2 className="card-title">{event.title_description}</h2>
         <p className="text-base font-semibold">{event.title}</p>
         <div>

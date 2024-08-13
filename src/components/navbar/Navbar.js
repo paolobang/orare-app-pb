@@ -9,11 +9,11 @@ import Image from "next/image";
 
 const Navbar = ({ toggleSidebar }) => {
   const { data: session } = useSession();
-  console.log(session);
+  //console.log(session);
 
   return (
     <div
-      className=" bg-base-100
+      className=" bg-white
   text-base-content sticky top-0 z-30 flex h-16 w-full justify-center transition-shadow duration-100 [transform:translate3d(0,0,0)] shadow-sm
  
   "
@@ -64,6 +64,13 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
         {session?.user ? (
           <div className="flex-0">
+            <div className="  flex-none items-center lg:block">
+              <div className="hidden avatar placeholder lg:inline-block">
+                <div className="bg-neutral text-neutral-content w-8 rounded-full">
+                  <Avatar name={session.user.email} />
+                </div>
+              </div>
+            </div>
 
             <div className=" flex-none items-center lg:block">
               <Link
@@ -82,11 +89,6 @@ const Navbar = ({ toggleSidebar }) => {
               </Link>
             </div>
             <div className="  flex-none items-center lg:block">
-              <div className="hidden avatar placeholder lg:inline-block">
-                <div className="bg-neutral text-neutral-content w-8 rounded-full">
-                  <Avatar name={session.user.email} />
-                </div>
-              </div>
               <button
                 onClick={() => {
                   signOut({

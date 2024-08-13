@@ -16,26 +16,68 @@
  */
 
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Layout from "../../components/layout/Layout";
 import Bubble from "../../components/bubble/Bubble";
 import { useChat } from "ai/react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { Message } from "ai"
+import { db } from "@neondatabase/serverless"
 
-const Chat = () => {
+import { signIn, useSession, signOut } from "next-auth/react";
+
+const Chat = ({chatId}) => {
+
+  const { data: session } =  useSession();
+  const  userId =  session?.user.id || null;
+  console.log('USER ID',userId);
+
+
+
+  // Mensaje de bienvenida del sistema
+  const welcomeMessage =`
+Hola! Te damos la bienvenida a Orare! 🙏
+
+Creemos en el poder de la oración y la reflexión personal. Para empezar, te invitamos a compartir una oración con nosotros. Puede ser una oración de gratitud, una petición, o cualquier pensamiento que quieras expresar.
+---
+**Ejemplo:**
+
+"Querido Dios, te agradezco por la salud y el amor que tengo en mi vida. Por favor, guía a mi familia y amigos en estos tiempos difíciles y dales paz y fortaleza."
+---
+¡Tu oración puede ser tan simple o detallada como desees! Solo escríbela en el campo de abajo y haz clic en "Enviar". Estamos aquí para escuchar y apoyarte en tu viaje espiritual.
+---
+¡Esperamos escuchar tus pensamientos y oraciones!
+`;
+
+
   // Set the useChat hook to handle comunication with our API Chat
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       api: "/api/chat-pry/", // Our API path
+      body: {
+        chatId,
+      },
+      initialMessages:  [],
+
       onResponse: (response) => {
         console.log("Respuesta de nuestro API Pry:", response);
       },
     });
+    
+
+      // Combina el mensaje de bienvenida con los mensajes posteriores
+      const allMessages = [
+        { role: "assistant", content: welcomeMessage },
+        ...messages
+      ];
+
 
   // It scrolls automaticly to last message
   const messagesEndRef = useRef(null);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [allMessages]);
 
   // Ref for the textarea
   const textAreaRef = useRef(null);
@@ -53,12 +95,13 @@ const Chat = () => {
     <Layout>
       <div className="flex flex-col h-screen">
         <div className="flex-1 p-4 pb-20 pt-16 overflow-y-auto">
-          {messages.map((m) => (
+          {allMessages.map((m) => (
             <Bubble
               key={m.id}
               message={m.content}
               isUser={m.role !== "assistant"}
               className={m.role}
+              chatId = {chatId}
             />
           ))}
           <div ref={messagesEndRef} />

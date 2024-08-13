@@ -17,15 +17,21 @@ const Bubble = ({ message, isUser }) => {
   // We split the message at the end of .' or ,"
   const sentences = message.split(/(?<=\.'|\.")/);
 
+  const blocks = message.split('---'); // Utiliza '---' como delimitador entre bloques
+  const backgroundStyle = isUser ?{backgroundColor: '#a18fc9'}: { backgroundColor: '#d4f4e4' }  ;
+
+
   return (
-    <div className={`chat ${isUser ? "chat-end" : "chat-start"}`}>
-      <div className={`chat-bubble ${isUser ? "text-neutral-200" : "text-cyan-600"}`}>
-        {sentences.map((sentence, index) => (
-          <span key={index} style={{ display: "block", paddingBottom: "8px" }}>
-            {sentence.trim()}
-            <br />
-            <br />
-          </span>
+    <div className={`chat ${isUser ? "chat-end" : "chat-start"}`} >
+      <div className={`chat-bubble ${isUser ? "text-neutral-200" : "text-cyan-600"}`} style={backgroundStyle}>
+        {blocks.map((block, index) => (
+          <div key={index} style={{ marginBottom: "16px" }}>
+            {block.trim().split('\n').map((line, lineIndex) => (
+              <span key={lineIndex} style={{ display: "block" }}>
+                {line}
+              </span>
+            ))}
+          </div>
         ))}
       </div>
     </div>
