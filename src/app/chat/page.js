@@ -23,9 +23,17 @@ import { useChat } from "ai/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Message } from "ai"
+import { db } from "@neondatabase/serverless"
 
+import { signIn, useSession, signOut } from "next-auth/react";
 
 const Chat = ({chatId}) => {
+
+  const { data: session } =  useSession();
+  const  userId =  session?.user.id || null;
+  console.log('USER ID',userId);
+
+
 
   // Mensaje de bienvenida del sistema
   const welcomeMessage =`

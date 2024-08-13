@@ -49,8 +49,10 @@ export async function POST(req: Request) {
 
     // Checking rates ---
     const qualifyingRates = pineconeResults?.filter(
-        (pineconeResults) => pineconeResults.score && pineconeResults.score > 0.1
+        (pineconeResults) => pineconeResults.score && pineconeResults.score > 0.5
     )
+
+    console.log('PineconeResults', qualifyingRates)   
     let rates = qualifyingRates?.map(pineconeResults => (pineconeResults.score))
     console.log('Scores', rates)
     // console.log('rates /////', rates?.join('\n').substring(0, 3000))
@@ -91,7 +93,12 @@ export async function POST(req: Request) {
                 pineconeResults[2]?.metadata?.pasaje ?? "No disponible"
               } : ${pineconeResults[2]?.metadata?.texto ?? "No disponible"}
               # fin Input #
-  
+              
+              # Inicio de Excepciones #
+              Si ${rates} < 0.5  entonces GPT le dirá al usuario: Parece que tu mensaje es breve y no contiene una petición.
+              Sin embargo, usando la información disponible, te proporcionaré un versículo que puede traer bendición y aliento en cualquier circunstancia.
+              # Fin de Excepciones #
+
               # Estructura Output #
               - Versículo recomendado: "..."
               - Párrafo con la interpretación del pasaje de la Biblia y palabras de aliento
