@@ -32,7 +32,8 @@ export async function POST(req: Request) {
   try {
 
     // Getting and checking messages from Diario Section
-    const { messages } = await req.json();
+    const { messages, chatId } = await req.json();
+    console.log( "chatId: ", chatId)
     if (!messages || messages.length === 0) {
       throw new Error("No se proporcionaron mensajes.");
     }

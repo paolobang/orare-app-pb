@@ -64,6 +64,13 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
         {session?.user ? (
           <div className="flex-0">
+            <div className="  flex-none items-center lg:block">
+              <div className="hidden avatar placeholder lg:inline-block">
+                <div className="bg-neutral text-neutral-content w-8 rounded-full">
+                  <Avatar name={session.user.email} />
+                </div>
+              </div>
+            </div>
 
             <div className=" flex-none items-center lg:block">
               <Link
@@ -82,11 +89,6 @@ const Navbar = ({ toggleSidebar }) => {
               </Link>
             </div>
             <div className="  flex-none items-center lg:block">
-              <div className="hidden avatar placeholder lg:inline-block">
-                <div className="bg-neutral text-neutral-content w-8 rounded-full">
-                  <Avatar name={session.user.email} />
-                </div>
-              </div>
               <button
                 onClick={() => {
                   signOut({
